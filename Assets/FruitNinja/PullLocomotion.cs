@@ -10,13 +10,15 @@ public class PullLocomotion : MonoBehaviour
 
     [Header("Pull Settings")]
     [Tooltip("The factor by which a pulling motion's velocity will be multiplied before applying a ground movement to the body.")]
-    public float PullForceFactor = 1f;
+    public float PullForceFactor = 2;
     [Tooltip("The minimum controller x/z velocity to register as movement. Must be a positive number.")]
-    public float PullThreshold = .005f;
+    public float PullThreshold = 1;
     [Tooltip("The factor by which a pulling motion's velocity will be multiplied before applying a jump velocity to the body.")]
-    public float JumpForceFactor = 100f;
+    public float JumpForceFactor = 1;
     [Tooltip("The minimum controller Y velocity to register as a jump. Must be a positive number.")]
-    public float JumpYThreshold = .035f;
+    public float JumpYThreshold = 3;
+    [Tooltip("The max speed of the Player.")]
+    public float MaxSpeed = 5;
 
     [Header("Custom Settings")]
     [Tooltip("The VRTK Body Physics script to use for dealing with climbing and falling. If this is left blank then the script will need to be applied to the same GameObject.")]
@@ -42,6 +44,7 @@ public class PullLocomotion : MonoBehaviour
     private bool mIsPulling;
     private GameObject mPullingController;
     private Vector3 mLastPullingPosition;
+    private Vector3 mPullingVelocity;
 
 
     protected virtual void Awake()
@@ -138,17 +141,28 @@ public class PullLocomotion : MonoBehaviour
 
     protected virtual void Pull(GameObject actualController)
     {
-        mIsPulling = true;
-
         mPullingController = actualController;
         mLastPullingPosition = GetScaledLocalPosition(mPullingController.transform);
+
+        mIsPulling = true;
     }
 
     protected virtual void Release(GameObject actualController)
     {
         if (actualController == mPullingController)
         {
+            BodyPhysics.ResetFalling();
             mIsPulling = false;
+
+            // Jumping
+            Vector3 jumpVector = -mPullingVelocity;
+            if (BodyPhysics.OnGround())
+            {
+                if (jumpVector.y > JumpYThreshold)
+                {
+                    BodyPhysics.ApplyBodyVelocity(jumpVector * JumpForceFactor, true, true);
+                }
+            }
 
             mPullingController = null;
         }
@@ -249,7 +263,7 @@ public class PullLocomotion : MonoBehaviour
         return (HeadsetCollision != null && HeadsetCollision.IsColliding());
     }
     
-    protected virtual void Update()
+    protected virtual void FixedUpdate()
     {
         if (mIsClimbing)
         {
@@ -273,30 +287,24 @@ public class PullLocomotion : MonoBehaviour
                 PositionRewind.SetLastGoodPosition();
             }
         }
-        else if (mIsPulling)
+        else if (mIsPulling && mPullingController)
         {
-            Vector3 controllerLocalOffset = GetScaledLocalPosition(mPullingController.transform) - mLastPullingPosition;
+            mPullingVelocity = (GetScaledLocalPosition(mPullingController.transform) - mLastPullingPosition) / Time.deltaTime;
 
-            Vector3 pullGroundVelocity = -controllerLocalOffset * PullForceFactor;
-            pullGroundVelocity.y = 0;
-
-            float pullJumpVelocity = -controllerLocalOffset.y;
-
-            if (BodyPhysics.OnGround())
+            // Pulling along ground
+            Vector3 pullGroundVelocity = new Vector3(mPullingVelocity.x, 0, mPullingVelocity.z);
+            if (pullGroundVelocity.magnitude > PullThreshold && BodyPhysics.GetVelocity().magnitude < MaxSpeed)
             {
-                if (pullJumpVelocity > JumpYThreshold)
+                pullGroundVelocity *= -PullForceFactor;
+
+                if (pullGroundVelocity.magnitude > MaxSpeed)
                 {
-                    BodyPhysics.ApplyBodyVelocity(new Vector3(pullGroundVelocity.x * JumpForceFactor, pullJumpVelocity * JumpForceFactor, pullGroundVelocity.x * JumpForceFactor));
+                    pullGroundVelocity = pullGroundVelocity.normalized * MaxSpeed;
                 }
-                else if (pullGroundVelocity.magnitude > PullThreshold)
-                {
-                    mPlayArea.position += pullGroundVelocity;
-                }
+                BodyPhysics.ApplyBodyVelocity(pullGroundVelocity, true, true);
             }
 
             mLastPullingPosition = GetScaledLocalPosition(mPullingController.transform);
-
-            Debug.Log("Pulling");
         }
     }
 }
