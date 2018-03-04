@@ -3,7 +3,7 @@ using VRTK;
 
 public class SwordController : MonoBehaviour
 {
-    public bool IsRightHand;
+    public bool IsRightHand = true;
 
     public GameObject SwordPrefab;
     public GameObject ShurikenPrefab;
