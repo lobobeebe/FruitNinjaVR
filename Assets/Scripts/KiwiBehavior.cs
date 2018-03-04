@@ -10,7 +10,7 @@ public class KiwiBehavior : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        player = GameObject.Find("Player");
+        player = GameObject.Find("RightController");
         spray = this.gameObject.transform.Find("SteamSpray").gameObject;
     }
 
@@ -21,7 +21,7 @@ public class KiwiBehavior : MonoBehaviour {
         {
             spray.SetActive(true);
             this.gameObject.transform.LookAt(player.transform);
-            this.gameObject.transform.position += transform.forward * Time.deltaTime;
+            this.gameObject.transform.position += transform.forward * Time.deltaTime * VoiceController.speed;
         }
         else
         {

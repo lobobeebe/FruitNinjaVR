@@ -11,7 +11,7 @@ public class AppleBehavior : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        player = GameObject.Find("Player");
+        player = GameObject.Find("RightController");
     }
 
     // Update is called once per frame
@@ -21,7 +21,7 @@ public class AppleBehavior : MonoBehaviour {
         if (Vector3.Distance(player.transform.position, this.gameObject.transform.position) <= PatrollingBehavior.aggroRadius)
         {
             this.gameObject.transform.LookAt(player.transform);
-            this.gameObject.transform.position += transform.forward * Time.deltaTime;
+            this.gameObject.transform.position += transform.forward * Time.deltaTime * VoiceController.speed;
             if (counter >= 200)
             {
                 GameObject newArrow = GameObject.Instantiate(arrow);

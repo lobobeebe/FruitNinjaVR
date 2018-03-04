@@ -21,7 +21,7 @@ public class WatermelonBehavior : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        player = GameObject.Find("Player");
+        player = GameObject.Find("RightController");
         objectOfAttraction = player.transform;
     }
 
@@ -45,7 +45,7 @@ public class WatermelonBehavior : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.gameObject.name.Equals("Player"))
+        if (collision.collider.gameObject.name.Equals("RightController"))
         {
             Destroy(this.gameObject);
         }

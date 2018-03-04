@@ -16,9 +16,10 @@ public class HealthPack : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.name.Equals("Player"))
+        if (collision.collider.name.Equals("RightController"))
         {
-            PlayerController.health += 10;
+            PlotController.health += 10;
+            Destroy(this.gameObject);
         }
     }
 }

@@ -19,7 +19,7 @@ public class PatrollingBehavior : MonoBehaviour
     void Start()
     {
         anchor = this.transform.position;
-        player = GameObject.Find("Player");
+        player = GameObject.Find("RightController");
         step = Time.deltaTime;
     }
 
@@ -50,7 +50,13 @@ public class PatrollingBehavior : MonoBehaviour
                 moveEnemy = false;
             }
         }
-        
-        
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.name.Equals("Sword_Mesh"))
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

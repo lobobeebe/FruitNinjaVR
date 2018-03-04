@@ -9,7 +9,7 @@ public class BananaBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        player = GameObject.Find("Player");
+        player = GameObject.Find("RightController");
 	}
 	
 	// Update is called once per frame
@@ -17,7 +17,7 @@ public class BananaBehavior : MonoBehaviour {
         if (Vector3.Distance(player.transform.position, this.gameObject.transform.position) <= PatrollingBehavior.aggroRadius)
         {
             this.gameObject.transform.LookAt(player.transform);
-            this.gameObject.transform.position += transform.forward * 8.0f * Time.deltaTime;
+            this.gameObject.transform.position += transform.forward * 8.0f * Time.deltaTime * VoiceController.speed;
         }
     }
 }
