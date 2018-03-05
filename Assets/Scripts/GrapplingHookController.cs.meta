@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 61fd1d80bc854cb4aa547584d457926f
+timeCreated: 1520138093
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - GrapplingGunPrefab: {fileID: 1760858876093832, guid: e67dc0863fa4ae94eb9f4e2d07a2fcba,
+      type: 2}
+  - HighlightPylonPrefab: {fileID: 1573920784522576, guid: ba7e67a65c68224428bf3267ef409ba3,
+      type: 2}
+  - PylonPrefab: {fileID: 1282887912333122, guid: 30b5ab3b1a360e34184ecb9160e5122d,
+      type: 2}
+  - RopePrefab: {fileID: 1856802619368186, guid: abebcf011d22ec24c893c0617196a42f,
+      type: 2}
+  - HandlePrefab: {fileID: 1449838842475412, guid: 4126be9467fff454f9528b5fc012d52b,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -4,12 +4,17 @@ using VRTK;
 public class SwordController : MonoBehaviour
 {
     public bool IsRightHand = true;
-
+    
     public GameObject SwordPrefab;
     public GameObject ShurikenPrefab;
 
+    public float ShurikenVelocityScale = 500;
+
     private GameObject mSword;
     private GameObject mShuriken;
+
+    private Vector3 mLastLocation;
+    private Vector3 mVelocity;
 
     enum HandState
     {
@@ -20,21 +25,43 @@ public class SwordController : MonoBehaviour
     
     private HandState mHandState;
 
-    // Use this for initialization
-    void Start ()
+    protected virtual void Awake()
     {
-        InitListeners(GetController(), true);
+        VRTK_SDKManager.instance.AddBehaviourToToggleOnLoadedSetupChange(this);
+    }
 
-        mSword = Instantiate(SwordPrefab, GetController().transform);
-        mSword.SetActive(false);
+    protected virtual void OnDestroy()
+    {
+        VRTK_SDKManager.instance.RemoveBehaviourToToggleOnLoadedSetupChange(this);
+    }
 
-        mShuriken = Instantiate(SwordPrefab, GetController().transform);
-        mShuriken.SetActive(false);
+    protected virtual void OnEnable()
+    {
+        GameObject controller = GetController();
+
+        if (controller)
+        {
+            InitListeners(controller, true);
+
+            mSword = Instantiate(SwordPrefab, controller.transform);
+            mSword.SetActive(false);
+
+            mShuriken = Instantiate(ShurikenPrefab, controller.transform);
+            Rigidbody rigidbody = mShuriken.GetComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
+
+            mShuriken.SetActive(false);
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        InitListeners(GetController(), false);
     }
 
     private void InitListeners(GameObject controller, bool state)
     {
-        if (state)
+        if (controller)
         {
             var controllerEvents = controller.GetComponent<VRTK_ControllerEvents>();
             if (state)
@@ -43,7 +70,7 @@ public class SwordController : MonoBehaviour
                 {
                     controllerEvents.TriggerClicked += OnTriggerClicked;
                     controllerEvents.TriggerReleased += OnTriggerReleased;
-                    controllerEvents.StartMenuPressed += OnStartMenuPressed;
+                    controllerEvents.ButtonTwoPressed += OnStartMenuPressed;
                 }
             }
             else
@@ -52,7 +79,7 @@ public class SwordController : MonoBehaviour
                 {
                     controllerEvents.TriggerClicked -= OnTriggerClicked;
                     controllerEvents.TriggerReleased -= OnTriggerReleased;
-                    controllerEvents.StartMenuPressed -= OnStartMenuPressed;
+                    controllerEvents.ButtonTwoPressed -= OnStartMenuPressed;
                 }
             }
         }
@@ -73,8 +100,11 @@ public class SwordController : MonoBehaviour
         {
             mHandState = HandState.Idle;
             
-            Instantiate(SwordPrefab, mShuriken.transform.position, 
+            GameObject shuriken = Instantiate(ShurikenPrefab, mShuriken.transform.position, 
                 mShuriken.transform.rotation);
+            Rigidbody rigidbody = shuriken.GetComponent<Rigidbody>();
+            rigidbody.velocity = mVelocity * ShurikenVelocityScale;
+
             mShuriken.SetActive(false);
         }
     }
@@ -91,6 +121,12 @@ public class SwordController : MonoBehaviour
             mHandState = HandState.Idle;
             mSword.SetActive(false);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        mVelocity = (GetController().transform.position - mLastLocation) / Time.deltaTime;
+        mLastLocation = GetController().transform.position;
     }
 
     private GameObject GetController()

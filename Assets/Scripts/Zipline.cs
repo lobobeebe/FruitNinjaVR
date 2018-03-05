@@ -6,7 +6,6 @@ public class Zipline : VRTK_InteractableObject
     [Header("Zipline Options", order = 4)]
     public float downStartSpeed = 0.2f;
     public float acceleration = 1.0f;
-    public float upSpeed = 1.0f;
     public Transform handleEndPosition;
     public Transform handleStartPosition;
     public GameObject handle;
@@ -36,26 +35,38 @@ public class Zipline : VRTK_InteractableObject
         {
             Vector3 moveAmount;
 
-            Vector3 distanceNormalized = (handleEndPosition.position - handleStartPosition.position).normalized;
+            Vector3 distance = handleEndPosition.position - handleStartPosition.position;
+
+            currentSpeed += acceleration * Time.deltaTime;
 
             if (isMovingDown)
             {
-                currentSpeed += acceleration * Time.deltaTime;
-                moveAmount = distanceNormalized * currentSpeed * Time.deltaTime;
+                moveAmount = distance.normalized * currentSpeed * Time.deltaTime;
             }
             else
             {
-                moveAmount = -distanceNormalized * upSpeed * Time.deltaTime;
+                moveAmount = -distance.normalized * currentSpeed * Time.deltaTime;
             }
-
-            handle.transform.localPosition += moveAmount;
-
-            if ((isMovingDown && handle.transform.localPosition.y <= handleEndPosition.localPosition.y) ||
-                (!isMovingDown && handle.transform.localPosition.y >= handleStartPosition.localPosition.y))
+            
+            if ((isMovingDown && (handle.transform.localPosition - handleEndPosition.localPosition).magnitude < moveAmount.magnitude) ||
+                (!isMovingDown && (handle.transform.localPosition - handleStartPosition.localPosition).magnitude < moveAmount.magnitude))
             {
+                if (isMovingDown)
+                {
+                    handle.transform.localPosition = handleEndPosition.position;
+                }
+                else
+                {
+                    handle.transform.localPosition = handleStartPosition.position;
+                }
+
                 isMoving = false;
                 isMovingDown = !isMovingDown;
                 currentSpeed = downStartSpeed;
+            }
+            else
+            {
+                handle.transform.localPosition += moveAmount;
             }
         }
     }

@@ -9,11 +9,11 @@ public class DestroyOnSlash : MonoBehaviour
 	void Start ()
     {
         mSlashable = GetComponent<Slashable>();
-        mSlashable.OnSlash += OnSlash;
+        mSlashable.Slash += OnSlash;
 	}
 
     void OnSlash()
     {
-        Destroy(this);
+        Destroy(gameObject);
     }
 }

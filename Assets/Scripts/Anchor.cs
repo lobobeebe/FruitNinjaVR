@@ -6,7 +6,7 @@ public class Anchor : MonoBehaviour
 
     private Vector3 mAnchorPoint;
 
-    private void Start()
+    private void Awake()
     {
         mAnchorPoint = AnchoredObject.transform.position;
     }
@@ -14,6 +14,12 @@ public class Anchor : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate ()
     {
+        Rigidbody rigidbody = AnchoredObject.GetComponent<Rigidbody>();
+        if (rigidbody)
+        {
+            rigidbody.velocity = Vector3.zero;
+        }
+
         AnchoredObject.transform.position = mAnchorPoint;
 	}
 }

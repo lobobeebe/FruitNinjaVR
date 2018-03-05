@@ -463,8 +463,7 @@ MonoBehaviour:
   allowedUseControllers: 0
   usingState: 0
   downStartSpeed: 0.2
-  acceleration: 1
-  upSpeed: 1
+  acceleration: 3
   handleEndPosition: {fileID: 0}
   handleStartPosition: {fileID: 0}
   handle: {fileID: 1449838842475412}

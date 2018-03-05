@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 091a03875e613f74c89f037857b4beae
+timeCreated: 1519959627
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - SwordPrefab: {fileID: 1489415643513270, guid: 392f2fd88811bfe47aaf325821fbc522,
+      type: 2}
+  - ShurikenPrefab: {fileID: 1940342287008124, guid: 19f1168f9faddf94fb6efea05404235f,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
