@@ -19,13 +19,13 @@ public class Slasher : MonoBehaviour
         mAngularVelocity = transform.rotation.eulerAngles - mLastEulerAngles;
         mLastEulerAngles = transform.rotation.eulerAngles;
     }
-
-    private void OnCollisionEnter(Collision collision)
+    
+    private void OnTriggerEnter(Collider other)
     {
         if (mVelocity.magnitude > VelocityThreshold ||
             mAngularVelocity.magnitude > AngularVelocityThreshold)
         {
-            Slashable Slashable = collision.gameObject.GetComponent<Slashable>();
+            Slashable Slashable = other.gameObject.GetComponent<Slashable>();
             if (Slashable)
             {
                 Slashable.Slash();

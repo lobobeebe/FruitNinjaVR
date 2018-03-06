@@ -12,6 +12,11 @@ public class DestroyOnSlash : MonoBehaviour
         mSlashable.Slash += OnSlash;
 	}
 
+    private void OnDestroy()
+    {
+        mSlashable.Slash -= OnSlash;
+    }
+
     void OnSlash()
     {
         Destroy(gameObject);
